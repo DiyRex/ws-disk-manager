@@ -1,0 +1,25 @@
+---
+- name: Initialize a disk with an MBR partition style
+  community.windows.win_initialize_disk:
+    disk_number: 1
+    style: mbr
+
+- name: Create a partition with drive letter D and size 5 GiB
+  community.windows.win_partition:
+    drive_letter: E
+    partition_size: 5 GiB
+    disk_number: 1
+
+- name: Full format the newly created partition as NTFS and label it
+  community.windows.win_format:
+    drive_letter: E
+    file_system: NTFS
+    new_label: Formatted
+    full: True
+  
+- name: Resize previously created partition to it's maximum size and change it's drive letter to E
+  community.windows.win_partition:
+    drive_letter: E
+    partition_size: 10 GiB
+    partition_number: 1
+    disk_number: 1
