@@ -1,3 +1,0 @@
----
-- include_tasks: get_disk_facts.yml
-- include_tasks: init_create_partition.yml
