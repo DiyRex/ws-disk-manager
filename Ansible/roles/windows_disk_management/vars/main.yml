@@ -1,2 +1,5 @@
 ---
 default_drive_letter: C
+drive_letter: F
+disk_number: 1
+
