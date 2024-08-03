@@ -1,0 +1,6 @@
+
+- name: Include get_disk_info tasks in Huawei Cloud
+  include_tasks: get_disk_info.yml
+
+- name: Include expand_volume tasks
+  include_tasks: expand_volume.yml

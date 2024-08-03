@@ -1,3 +1,19 @@
 ---
+
 - include_tasks: get_disk_facts.yml
-- include_tasks: init_create_partition.yml
+
+# - name: Include init_create_partition tasks
+#   include_tasks: init_create_partition.yml
+#   when: role_specific_vars.include_create_partition
+
+# - name: Include resize_partition tasks
+#   include_tasks: resize_partition.yml
+#   when: role_specific_vars.include_resize_partition
+
+- name: Include get_disk_info tasks
+  include_tasks: get_disk_info.yml
+
+- name: Include extend_partition tasks
+  include_tasks: extend_partition.yml
+
+

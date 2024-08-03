@@ -1,0 +1,122 @@
+name: Deploy to Windows Server
+
+on:
+  push:
+    branches:
+      - ws-disk-manager
+env:
+  ENVIRONMENT: stage
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      HUAWEICLOUD_SDK_AK: ${{ secrets.HUAWEICLOUD_SDK_AK }}
+      HUAWEICLOUD_SDK_SK: ${{ secrets.HUAWEICLOUD_SDK_SK }}
+      REGION: ${{ secrets.REGION }}
+      WINDOWS_IP: ${{ secrets.WINDOWS_IP }}
+      WINDOWS_USER: ${{ secrets.WINDOWS_USER }}
+      # REPOSITORY: ${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}
+      REPOSITORY: ${{ github.repository }}
+      BRANCH: ${{ github.ref_name }}
+      OPERATOR: ${{ github.actor }}
+      ACTION_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+
+
+    outputs:
+      resize_status: ${{ steps.check_status.outputs.resize_success }}
+      error_message: ${{ steps.check_status.outputs.error_message }}
+      tg_message: ${{ steps.ansible_play.outputs.tg_message }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: ls inventory
+      working-directory: ./Ansible
+      run: |
+        ls -a
+
+    - name: Write SSH private key to inventory
+      working-directory: ./Ansible
+      run: |
+        chmod 400 privatekey.pem
+      env:
+        WINDOWS_PRIVATE_SSH_KEY: ${{ secrets.WINDOWS_PRIVATE_SSH_KEY }}
+
+    - name: Create Ansible inventory file
+      working-directory: ./Ansible
+      run: |
+        echo "[windows]" > inventory.ini
+        echo "${{secrets.WINDOWS_HOST_NAME}} ansible_host=${{ secrets.WINDOWS_IP }} ansible_user=${{ secrets.WINDOWS_USER }} ansible_connection=ssh ansible_shell_type=powershell ansible_shell_executable=None ansible_ssh_private_key_file=privatekey.pem" >> inventory.ini
+        ls -a
+        cat inventory.ini
+
+    - name: Set permissions for template
+      working-directory: Ansible/roles/windows_disk_management/templates
+      run: |
+        chmod 400 state.ini.j2
+        chmod 400 error.ini.j2
+
+    - name: Set permissions for config
+      run: |
+        chmod -R 755 Ansible/config
+
+    - name: List files in config directory
+      run: ls -l Ansible/config
+
+    
+    - name: Update package list and install Python 3 and Ansible
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3 python3-pip
+        python3 -m pip install --user ansible
+
+    - name: Install dependencies from requirements.txt
+      working-directory: ./Ansible
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install --user -r ./requirements.txt
+        
+    - name: Run Ansible Playbook
+      id: ansible_play
+      working-directory: ./Ansible
+      run: |
+        ansible-playbook -i inventory.ini manage_disk.yml
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: 'false'
+        GITHUB_OUTPUT: ${{ github.env }}
+
+    - name: Check resize status
+      working-directory: ./Ansible 
+      id: check_status
+      run: |
+        resize_success=$(grep -m 1 resize_success state.ini | cut -d '=' -f 2)
+        if [ -z "$resize_success" ]; then
+          resize_success="False"
+        fi
+        error_message=$(grep -m 1 error_message error.ini | cut -d '=' -f 2)
+        # Check if error_message was found, if not, set it to "No error message"
+        if [ -z "$error_message" ]; then
+          error_message="No errors"
+        fi
+        echo "resize_success=$resize_success" >> $GITHUB_OUTPUT
+        echo "error_message=$error_message" >> $GITHUB_OUTPUT
+        echo "resize_success: $resize_success"
+        echo "error_message: $error_message"
+    - name: test output
+      run: |
+        echo "${{ steps.ansible_play.outputs.TG_MESSAGE }}"
+        
+    - name: Send telegram message
+      working-directory: ./Ansible/huawei_cloud/
+      id: send_tg_message
+      run: |
+        python send_message.py -m "${{ steps.ansible_play.outputs.TG_MESSAGE }}"
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+        # python send_message.py -m "${{ steps.ansible_play.output.tg_message }}"

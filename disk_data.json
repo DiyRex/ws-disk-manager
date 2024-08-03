@@ -1,0 +1,136 @@
+{
+    "clustered": false,
+    "friendly_name": "VBOX HARDDISK",
+    "number": 1,
+    "sector_size": 512,
+    "unique_id": "     ATAVBOX HARDDISK",
+    "partition_count": 1,
+    "win32_disk_drive": {
+      "availability": null,
+      "scsi_logical_unit": 0,
+      "creation_class_name": "Win32_DiskDrive",
+      "default_block_size": null,
+      "scsi_target_id": 0,
+      "scsi_bus": 2,
+      "compression_method": null,
+      "interface_type": "IDE",
+      "manufacturer": "(Standard disk drives)",
+      "status": "OK",
+      "config_manager_user_config": false,
+      "config_manager_error_code": 0,
+      "pnp_device_id": "SCSI\\DISK&VEN_VBOX&PROD_HARDDISK\\4&2617AEAE&0&020000",
+      "total_heads": 255,
+      "error_description": null,
+      "status_info": null,
+      "total_sectors": 41929650,
+      "error_cleared": null,
+      "sectors_per_track": 63,
+      "bytes_per_sector": 512,
+      "name": "\\\\.\\PHYSICALDRIVE1",
+      "power_management_capabilities": null,
+      "error_methodology": null,
+      "min_block_size": null,
+      "caption": "VBOX HARDDISK",
+      "max_media_size": null,
+      "firmware_revision": "1.0",
+      "install_date": null,
+      "description": "Disk drive",
+      "model": "VBOX HARDDISK",
+      "system_name": "WIN-OOLAV06269G",
+      "power_management_supported": null,
+      "device_id": "\\\\.\\PHYSICALDRIVE1",
+      "signature": 2447825048,
+      "media_type": "Fixed hard disk media",
+      "number_of_media_supported": null,
+      "capabilities": [
+        3,
+        4,
+        10
+      ],
+      "serial_number": "VBb343f8cc-7de6d229",
+      "tracks_per_cylinder": 255,
+      "total_tracks": 665550,
+      "capability_descriptions": [
+        "Random Access",
+        "Supports Writing",
+        "SMART Notification"
+      ],
+      "media_loaded": true,
+      "partitions": [
+        {
+          "shadow_copy": false,
+          "drive_letter": "E",
+          "number": 1,
+          "access_paths": [
+            "E:\\",
+            "\\\\?\\Volume{91e6d898-0000-0000-0000-100000000000}\\"
+          ],
+          "hidden": false,
+          "offset": 1048576,
+          "transition_state": 1,
+          "type": "IFS",
+          "mbr_type": 7,
+          "guid": null,
+          "size": 10737418240,
+          "volumes": [
+            {
+              "size": 10737414144,
+              "allocation_unit_size": 4096,
+              "type": "NTFS",
+              "size_remaining": 10711470080,
+              "object_id": "{1}\\\\WIN-OOLAV06269G\\root/Microsoft/Windows/Storage/Providers_v2\\WSP_Volume.ObjectId=\"{5d89884d-3da4-11ef-a4f8-806e6f6e6963}:VO:\\\\?\\Volume{91e6d898-0000-0000-0000-100000000000}\\\"",
+              "health_status": "Healthy",
+              "label": "Formatted",
+              "path": "\\\\?\\Volume{91e6d898-0000-0000-0000-100000000000}\\",
+              "drive_type": "Fixed"
+            }
+          ],
+          "active": false
+        }
+      ],
+      "firmware_version": "1.0",
+      "guid": null,
+      "model": "VBOX HARDDISK",
+      "size": 21474836480,
+      "read_only": false,
+      "bus_type": "SATA",
+      "bootable": false,
+      "partition_style": "MBR",
+      "physical_disk": {
+        "manufacturer": null,
+        "operational_status": "OK",
+        "firmware_version": "1.0",
+        "size": 21474836480,
+        "partial": false,
+        "object_id": "{1}\\\\WIN-OOLAV06269G\\root/Microsoft/Windows/Storage/Providers_v2\\SPACES_PhysicalDisk.ObjectId=\"{5d89884d-3da4-11ef-a4f8-806e6f6e6963}:PD:{57027fe7-7e78-259f-4676-7244964cdee0}\"",
+        "usage_type": "Auto-Select",
+        "media_type": "Unspecified",
+        "friendly_name": "VBOX HARDDISK",
+        "supported_usages": {
+          "value": [
+            "Auto-Select",
+            "Manual-Select",
+            "Hot Spare",
+            "Retired",
+            "Journal"
+          ],
+          "Count": 5
+        },
+        "bus_type": "SATA",
+        "device_id": "1",
+        "can_pool": true,
+        "indication_enabled": false,
+        "unique_id": "     ATAVBOX HARDDISK",
+        "serial_number": "VBb343f8cc-7de6d229",
+        "allocated_size": 2097152,
+        "spindle_speed": 0,
+        "model": "VBOX HARDDISK",
+        "physical_location": "Integrated : Bus 0 : Device 13 : Function 0 : Adapter 0 : Port 2",
+        "health_status": "Healthy"
+      },
+      "serial_number": "VBb343f8cc-7de6d229",
+      "location": "Integrated : Bus 0 : Device 13 : Function 0 : Adapter 0 : Port 2",
+      "path": "\\\\?\\scsi#disk&ven_vbox&prod_harddisk#4&2617aeae&0&020000#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}"
+    }
+  }
+  

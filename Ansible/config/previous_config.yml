@@ -1,0 +1,34 @@
+---
+# Operation Type
+include_create_partition: false
+include_resize_partition: true
+
+# Resize Partitions
+resize_partitions:
+  - drive-name: drive1
+    disk_number: 1
+    drive_letter: F
+    partition_size: -1
+    partition_number: 1
+
+  # - drive-name: drive2
+  #   disk_number: 2
+  #   drive_letter: G
+  #   partition_size: 8GiB
+  #   partition_number: 1
+
+# Create Partitions
+create_partitions:
+  - drive_name: drive1
+    disk_number: 1
+    drive_letter: F
+    partition_size: 6GiB
+    partition_name: Drive-F
+  
+  # - drive_name: drive2
+  #   disk_number: 2
+  #   drive_letter: G
+  #   partition_size: 8GiB
+  #   partition_name: Drive-G
+  
+  

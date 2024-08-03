@@ -1,0 +1,22 @@
+- name: Run manage_disk module
+  local_action:
+    module: manage_volume
+    src_file_path: '{{ playbook_dir }}/config/{{ inventory_hostname }}.yml'
+    config_file_path: '{{ playbook_dir }}/default_disk_config.ini'
+    server_ip: "{{ ansible_host }}"
+    server_user: "{{ ansible_user }}"
+  environment:
+    TELEGRAM_BOT_TOKEN: "{{ lookup('env', 'TELEGRAM_BOT_TOKEN') }}"
+    TELEGRAM_CHAT_ID: "{{ lookup('env', 'TELEGRAM_CHAT_ID') }}"
+    HUAWEICLOUD_SDK_AK: "{{ lookup('env', 'HUAWEICLOUD_SDK_AK') }}"
+    HUAWEICLOUD_SDK_SK: "{{ lookup('env', 'HUAWEICLOUD_SDK_SK') }}"
+    REGION: "{{ lookup('env', 'REGION') }}"
+    REPOSITORY: "{{ lookup('env', 'REPOSITORY') }}"
+    BRANCH: "{{ lookup('env', 'BRANCH') }}"
+    OPERATOR: "{{ lookup('env', 'OPERATOR') }}"
+    ACTION_URL: "{{ lookup('env', 'ACTION_URL') }}"
+  register: result
+
+- name: Display result
+  debug:
+    var: result.message

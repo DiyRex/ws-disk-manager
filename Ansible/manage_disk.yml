@@ -1,9 +1,59 @@
 ---
 - hosts: windows
-  vars_files:
-    - vars/main.yml
-  roles:
-    - role: windows_disk_management
+
+  tasks:
+      - name: Install dependencies from requirements.txt
+        shell: pip install -r requirements.txt
+        delegate_to: localhost
+      
+      - name: Include get_disk_info.yml at Initialize Stage
+        include_tasks:
+          file: "{{ playbook_dir }}/roles/windows_disk_management/tasks/get_disk_info.yml"
+            
+      - name: Check the existance of var file
+        block:
+          - name: Determine the variable file to include
+            set_fact:
+              vars_file: "{{ playbook_dir }}/config/{{ inventory_hostname }}.yml"
+          - name: Include variables based on the host
+            include_vars:
+              file: "{{ vars_file }}"
+              name: host_vars
+
+          - name: Set fact for host-specific variables
+            set_fact:
+              role_vars: "{{ host_vars }}"
+
+          - name: Debug included variables
+            debug:
+              var: host_vars
+
+          - name: Apply windows disk management role before extend
+            include_role:
+              name: windows_disk_management
+            vars:
+              role_specific_vars: "{{ role_vars }}"
+          
+          - name: Apply huawei disk management role
+            include_role:
+              name: huawei_disk_management
+            vars:
+              role_specific_vars: "{{ role_vars }}"
+
+          - name: Apply windows disk management role after extend
+            include_role:
+              name: windows_disk_management
+            vars:
+              role_specific_vars: "{{ role_vars }}"
+
+        rescue:
+          - name: Write error-config-missing to a file using template
+            local_action:
+              module: template
+              src: "roles/windows_disk_management/templates/error.ini.j2"
+              dest: "{{ playbook_dir }}/error.ini"
+            vars:
+              error_message: "Config file missing"
 
 
 

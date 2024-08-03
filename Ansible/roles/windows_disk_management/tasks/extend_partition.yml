@@ -1,29 +1,14 @@
 ---
-
+    
 - block:
-  - name: Initialize the disk with an MBR partition style
-    community.windows.win_initialize_disk:
-      disk_number: "{{ item.disk_number }}"   
-      style: mbr
-    loop: "{{ host_vars.create_partitions }}"
-    when: item.disk_number is defined
-
-  - name: Create a partition
+  - name: Resize Partitions
     community.windows.win_partition:
       drive_letter: "{{ item.drive_letter }}"
-      partition_size: "{{ item.partition_size }}"
+      partition_size: -1
+      partition_number: "{{ item.partition_number }}"
       disk_number: "{{ item.disk_number }}"
-    loop: "{{ host_vars.create_partitions }}"
-    when: item.drive_letter is defined
-
-  - name: Formatting and labeling created partition
-    community.windows.win_format:
-      drive_letter: "{{ item.drive_letter }}"
-      file_system: NTFS
-      new_label: "{{ item.partition_name }}"
-      full: True
-    loop: "{{ host_vars.create_partitions }}"
-    when: item.drive_letter is defined
+    loop: "{{ host_vars.disks }}"
+    when: item.partition_number is defined
     
   - name: Set success variable
     set_fact:
@@ -48,7 +33,7 @@
       vars:
         resize_success: "{{ resize_success | default('false') }}"
 
-    - name: Write error mesage to file using template
+    - name: Write error-resize message to file using template
       local_action:
         module: template
         src: "roles/windows_disk_management/templates/error.ini.j2"

@@ -1,0 +1,40 @@
+---
+# generate disk_info.yml
+- name: Copy PowerShell script to Windows Server
+  win_copy:
+    src: "{{playbook_dir}}/ps1_scripts/get_disk_info.ps1"
+    dest: C:\Users\Administrator\AppData\Local\Temp\get_disk_info.ps1
+
+- name: Execute PowerShell script
+  win_shell: powershell -File C:\Users\Administrator\AppData\Local\Temp\get_disk_info.ps1
+  register: disk_info
+
+- name: Parse disk information
+  set_fact:
+    parsed_disk_info: "{{ disk_info.stdout | from_json }}"
+
+- name: Structure disk information
+  set_fact:
+    structured_disk_info: |
+      disks:
+      {% for disk in parsed_disk_info %}
+        - disk_number: "{{ disk.DiskNumber }}"
+          partition_number: "{{ disk.PartitionNumber }}"
+          drive_letter: "{{ disk.DriveLetter }}"
+          volume_label: "{{ disk.VolumeLabel | default('N/A') }}"
+          size: "{{ disk.Size }} GB"
+          free: "{{ disk.Free }} GB"
+          used: "{{ disk.Used }} GB"
+          serial_number: "{{ disk.SerialNumber }}"
+          unallocated_space: "{{ disk.UnallocatedSpace }} GB"
+      {% endfor %}
+
+- name: Save disk information to file locally
+  local_action:
+    module: copy
+    content: "{{ structured_disk_info }}"
+    dest: "{{ playbook_dir }}/config/{{ inventory_hostname }}.yml"
+
+- name: Display structured disk information
+  debug:
+    msg: "{{ structured_disk_info }}"
